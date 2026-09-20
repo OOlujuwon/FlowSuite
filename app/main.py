@@ -5,16 +5,22 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 
+from app.clientflow import router as clientflow_router
 from app.config.settings import settings
 from app.database.database import create_db_and_tables
 from app.services.pricing import (
     cleanflow_file_price,
     currency_symbol,
 )
-from app.shared.errors import FlowSuiteError, flowsuite_error_handler
+from app.shared.errors import (
+    FlowSuiteError,
+    flowsuite_error_handler,
+)
 
 
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(
+    directory="templates"
+)
 
 
 @asynccontextmanager
@@ -27,7 +33,10 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title=settings.app_name,
     version=settings.app_version,
-    description="FlowSuite — simple self-service business operations tools.",
+    description=(
+        "FlowSuite — simple self-service "
+        "business operations tools."
+    ),
     lifespan=lifespan,
 )
 
@@ -45,7 +54,15 @@ app.mount(
 )
 
 
-@app.get("/", response_class=HTMLResponse)
+app.include_router(
+    clientflow_router,
+)
+
+
+@app.get(
+    "/",
+    response_class=HTMLResponse,
+)
 def home(request: Request):
     context = {
         "request": request,
@@ -74,7 +91,10 @@ def cleanflow_pricing(
     quantity: int = 1,
     currency: str = "NGN",
 ):
-    total = cleanflow_file_price(quantity, currency)
+    total = cleanflow_file_price(
+        quantity,
+        currency,
+    )
 
     return {
         "service": "CleanFlow",

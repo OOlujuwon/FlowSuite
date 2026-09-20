@@ -1,0 +1,310 @@
+{% extends "clientflow/layout.html" %}
+
+{% block title %}{{ customer.name }} — ClientFlow{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-start mb-4">
+
+    <div>
+
+        <div class="text-muted small mb-1">
+            Customer
+        </div>
+
+        <h2 class="h3 mb-1">
+            {{ customer.name }}
+        </h2>
+
+        <span class="badge text-bg-light">
+            {{ customer.status|capitalize }}
+        </span>
+
+    </div>
+
+    <div class="d-flex gap-2">
+
+        <a
+            href="/clientflow/customers/{{ customer.id }}/edit"
+            class="btn btn-outline-dark"
+        >
+            Edit
+        </a>
+
+        <form
+            method="post"
+            action="/clientflow/customers/{{ customer.id }}/delete"
+            onsubmit="return confirm('Delete this customer?');"
+        >
+
+            <button
+                type="submit"
+                class="btn btn-outline-danger"
+            >
+                Delete
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<div class="row g-4">
+
+    <div class="col-lg-5">
+
+        <div class="card mb-4">
+
+            <div class="card-header bg-white">
+                <strong>Customer details</strong>
+            </div>
+
+            <div class="card-body">
+
+                <dl class="row mb-0">
+
+                    <dt class="col-sm-4">
+                        Company
+                    </dt>
+
+                    <dd class="col-sm-8">
+                        {{ customer.company or "—" }}
+                    </dd>
+
+
+                    <dt class="col-sm-4">
+                        Email
+                    </dt>
+
+                    <dd class="col-sm-8">
+                        {{ customer.email or "—" }}
+                    </dd>
+
+
+                    <dt class="col-sm-4">
+                        Phone
+                    </dt>
+
+                    <dd class="col-sm-8">
+                        {{ customer.phone or "—" }}
+                    </dd>
+
+
+                    <dt class="col-sm-4">
+                        Notes
+                    </dt>
+
+                    <dd class="col-sm-8">
+                        {{ customer.notes or "—" }}
+                    </dd>
+
+                </dl>
+
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-header bg-white">
+                <strong>Add follow-up</strong>
+            </div>
+
+            <div class="card-body">
+
+                <form
+                    method="post"
+                    action="/clientflow/customers/{{ customer.id }}/followups"
+                >
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Title *
+                        </label>
+
+                        <input
+                            type="text"
+                            name="title"
+                            class="form-control"
+                            required
+                            placeholder="Call customer"
+                        >
+
+                    </div>
+
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Due date *
+                        </label>
+
+                        <input
+                            type="date"
+                            name="due_date"
+                            class="form-control"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Description
+                        </label>
+
+                        <textarea
+                            name="description"
+                            class="form-control"
+                            rows="3"
+                        ></textarea>
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="btn btn-dark"
+                    >
+                        Add follow-up
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="col-lg-7">
+
+        <div class="card mb-4">
+
+            <div class="card-header bg-white">
+                <strong>Follow-ups</strong>
+            </div>
+
+            <div class="card-body p-0">
+
+                {% if followups %}
+
+                    <div class="list-group list-group-flush">
+
+                        {% for followup in followups %}
+
+                            <div class="list-group-item py-3">
+
+                                <div class="d-flex justify-content-between">
+
+                                    <div>
+
+                                        <div class="fw-semibold">
+                                            {{ followup.title }}
+                                        </div>
+
+                                        <div class="small text-muted">
+                                            Due {{ followup.due_date }}
+                                        </div>
+
+                                        {% if followup.description %}
+                                            <div class="small mt-2">
+                                                {{ followup.description }}
+                                            </div>
+                                        {% endif %}
+
+                                    </div>
+
+                                    <div>
+
+                                        {% if followup.status == "completed" %}
+
+                                            <span class="badge text-bg-success">
+                                                Completed
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="badge text-bg-warning">
+                                                Pending
+                                            </span>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="p-4 text-muted">
+                        No follow-ups yet.
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-header bg-white">
+                <strong>Activity history</strong>
+            </div>
+
+            <div class="card-body p-0">
+
+                {% if activities %}
+
+                    <div class="list-group list-group-flush">
+
+                        {% for activity in activities %}
+
+                            <div class="list-group-item py-3">
+
+                                <div class="fw-semibold">
+                                    {{ activity.description }}
+                                </div>
+
+                                <div class="small text-muted">
+                                    {{ activity.created_at.strftime("%Y-%m-%d %H:%M") }}
+                                </div>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="p-4 text-muted">
+                        No activity yet.
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

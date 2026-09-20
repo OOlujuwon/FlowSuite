@@ -1,0 +1,203 @@
+{% extends "clientflow/layout.html" %}
+
+{% block title %}ClientFlow Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <p class="text-uppercase text-muted small mb-1">
+            ClientFlow
+        </p>
+        <h1 class="h2 mb-1">Customer dashboard</h1>
+        <p class="text-muted mb-0">
+            Keep track of customers and follow-ups.
+        </p>
+    </div>
+
+    <a
+        href="/clientflow/customers/new"
+        class="btn btn-dark"
+    >
+        + Add customer
+    </a>
+</div>
+
+<div class="row g-3 mb-4">
+
+    <div class="col-md-3">
+        <div class="card stat-card h-100">
+            <div class="card-body">
+                <div class="text-muted small">
+                    Customers
+                </div>
+                <div class="display-6 fw-bold">
+                    {{ stats.customers }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card stat-card h-100">
+            <div class="card-body">
+                <div class="text-muted small">
+                    Active
+                </div>
+                <div class="display-6 fw-bold">
+                    {{ stats.active_customers }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card stat-card h-100">
+            <div class="card-body">
+                <div class="text-muted small">
+                    Leads
+                </div>
+                <div class="display-6 fw-bold">
+                    {{ stats.leads }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card stat-card h-100">
+            <div class="card-body">
+                <div class="text-muted small">
+                    Pending follow-ups
+                </div>
+                <div class="display-6 fw-bold">
+                    {{ stats.pending_followups }}
+                </div>
+
+                {% if stats.overdue_followups %}
+                    <div class="small text-danger mt-1">
+                        {{ stats.overdue_followups }} overdue
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<div class="row g-4">
+
+    <div class="col-lg-7">
+
+        <div class="card">
+            <div class="card-header bg-white py-3">
+                <strong>Upcoming follow-ups</strong>
+            </div>
+
+            <div class="card-body p-0">
+
+                {% if followups %}
+
+                    <div class="list-group list-group-flush">
+
+                        {% for followup in followups %}
+
+                            <div class="list-group-item py-3">
+
+                                <div class="d-flex justify-content-between">
+
+                                    <div>
+                                        <div class="fw-semibold">
+                                            {{ followup.title }}
+                                        </div>
+
+                                        <div class="small text-muted">
+                                            Due {{ followup.due_date }}
+                                        </div>
+                                    </div>
+
+                                    <form
+                                        method="post"
+                                        action="/clientflow/followups/{{ followup.id }}/complete"
+                                    >
+                                        <button
+                                            class="btn btn-sm btn-outline-success"
+                                            type="submit"
+                                        >
+                                            Complete
+                                        </button>
+                                    </form>
+
+                                </div>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="p-4 text-muted">
+                        No pending follow-ups.
+                    </div>
+
+                {% endif %}
+
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="col-lg-5">
+
+        <div class="card">
+            <div class="card-header bg-white py-3">
+                <strong>Recent customers</strong>
+            </div>
+
+            <div class="card-body p-0">
+
+                {% if customers %}
+
+                    <div class="list-group list-group-flush">
+
+                        {% for customer in customers %}
+
+                            <a
+                                href="/clientflow/customers/{{ customer.id }}"
+                                class="list-group-item list-group-item-action py-3"
+                            >
+
+                                <div class="fw-semibold">
+                                    {{ customer.name }}
+                                </div>
+
+                                <div class="small text-muted">
+                                    {{ customer.company or customer.email or "No contact details" }}
+                                </div>
+
+                            </a>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="p-4 text-muted">
+                        No customers yet.
+                    </div>
+
+                {% endif %}
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
