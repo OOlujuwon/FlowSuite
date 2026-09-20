@@ -2,10 +2,9 @@ from sqlmodel import SQLModel, Session, create_engine
 
 from app.config.settings import settings
 
-# Import models so SQLModel knows about every table before
-# create_all() is called.
 from app.models.shared import Customer, Activity, Currency, PricingRule
 from app.models.clientflow import FollowUp
+from app.models.payflow import Invoice, InvoiceItem, Payment, PaymentReminder
 
 
 engine = create_engine(
@@ -16,7 +15,6 @@ engine = create_engine(
 
 
 def create_db_and_tables() -> None:
-    """Create all registered FlowSuite database tables."""
     SQLModel.metadata.create_all(engine)
 
 

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ invoice.invoice_number }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 850px;
+            margin: 40px auto;
+            padding: 20px;
+            color: #222;
+        }
+
+        h1 {
+            margin-bottom: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+        }
+
+        th, td {
+            border-bottom: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .summary {
+            margin-top: 30px;
+            margin-left: auto;
+            width: 300px;
+        }
+
+        .summary div {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+        }
+
+        .total {
+            font-weight: bold;
+            font-size: 1.2em;
+            border-top: 2px solid #222;
+            margin-top: 8px;
+            padding-top: 10px !important;
+        }
+
+        @media print {
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="no-print">
+        <button onclick="window.print()">Print</button>
+    </div>
+
+    <h1>Invoice</h1>
+    <p><strong>{{ invoice.invoice_number }}</strong></p>
+
+    <p>
+        <strong>Customer:</strong><br>
+        {{ customer.name }}
+    </p>
+
+    <p>
+        <strong>Issued:</strong>
+        {{ invoice.issue_date.strftime("%Y-%m-%d") }}
+    </p>
+
+    {% if invoice.due_date %}
+    <p>
+        <strong>Due:</strong>
+        {{ invoice.due_date.strftime("%Y-%m-%d") }}
+    </p>
+    {% endif %}
+
+    <table>
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.description }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ invoice.currency }} {{ "%.2f"|format(item.unit_price) }}</td>
+                <td>{{ invoice.currency }} {{ "%.2f"|format(item.line_total) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="summary">
+        <div>
+            <span>Subtotal</span>
+            <span>{{ invoice.currency }} {{ "%.2f"|format(invoice.subtotal) }}</span>
+        </div>
+
+        <div>
+            <span>Paid</span>
+            <span>{{ invoice.currency }} {{ "%.2f"|format(invoice.amount_paid) }}</span>
+        </div>
+
+        <div class="total">
+            <span>Balance Due</span>
+            <span>{{ invoice.currency }} {{ "%.2f"|format(invoice.balance_due) }}</span>
+        </div>
+    </div>
+
+    {% if invoice.notes %}
+    <p style="margin-top:40px;">
+        <strong>Notes:</strong><br>
+        {{ invoice.notes }}
+    </p>
+    {% endif %}
+</body>
+</html>

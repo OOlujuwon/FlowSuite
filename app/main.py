@@ -6,6 +6,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 
 from app.clientflow import router as clientflow_router
+from app.payflow import router as payflow_router
 from app.config.settings import settings
 from app.database.database import create_db_and_tables
 from app.services.pricing import (
@@ -56,6 +57,10 @@ app.mount(
 
 app.include_router(
     clientflow_router,
+)
+
+app.include_router(
+    payflow_router,
 )
 
 
