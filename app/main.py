@@ -1,39 +1,54 @@
 import asyncio
-
+import logging
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
-
-from app.clientflow import router as clientflow_router
-from app.payflow import router as payflow_router
-from app.cleanflow import router as cleanflow_router
-from app.config.settings import settings
-from app.database.database import create_db_and_tables
-
+from fastapi.templating import Jinja2Templates
 from sqlmodel import Session
 
 from app.automation import router as automation_router
-from app.database.database import engine
+from app.cleanflow import router as cleanflow_router
+from app.clientflow import router as clientflow_router
+from app.payflow import router as payflow_router
+
+from app.database.database import (
+    create_db_and_tables,
+    engine,
+)
+
 from app.services.automation import run_due_automations
 from app.services.pricing import (
     cleanflow_file_price,
     currency_symbol,
 )
+
 from app.shared.errors import (
     FlowSuiteError,
     flowsuite_error_handler,
 )
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
+)
+
+logger = logging.getLogger("flowsuite")
 
 templates = Jinja2Templates(
     directory="templates"
 )
 
+
 async def automation_loop():
-    """Run scheduled automation rules periodically."""
+    """
+    Run scheduled automation rules periodically.
+
+    The loop intentionally runs in the application process
+    for the MVP. A production deployment can later move
+    scheduled jobs to a dedicated worker.
+    """
 
     while True:
         try:
@@ -41,15 +56,20 @@ async def automation_loop():
                 run_due_automations(session)
 
         except Exception:
-            # A failed scheduled run must not kill
-            # the entire application.
-            pass
+            logger.exception(
+                "Scheduled automation cycle failed."
+            )
 
         await asyncio.sleep(30)
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Application startup and shutdown lifecycle."""
+    """
+    Application startup and shutdown lifecycle.
+    """
+
+    logger.info("Starting FlowSuite.")
 
     create_db_and_tables()
 
@@ -61,21 +81,24 @@ async def lifespan(app: FastAPI):
         yield
 
     finally:
+        logger.info("Stopping FlowSuite.")
+
         scheduler_task.cancel()
 
         try:
             await scheduler_task
+
         except asyncio.CancelledError:
             pass
 
 
 app = FastAPI(
-    title=settings.app_name,
-    version=settings.app_version,
+    title="FlowSuite",
     description=(
-        "FlowSuite — simple self-service "
-        "business operations tools."
+        "Small-business revenue operations tools: "
+        "ClientFlow, PayFlow and CleanFlow."
     ),
+    version="1.0.0",
     lifespan=lifespan,
 )
 
@@ -93,64 +116,45 @@ app.mount(
 )
 
 
-app.include_router(
-    clientflow_router,
-)
-
-app.include_router(
-    payflow_router,
-)
-
-app.include_router(
-    cleanflow_router,
-)
-
-app.include_router(
-    automation_router,
-)
-
 @app.get(
     "/",
     response_class=HTMLResponse,
 )
-def home(request: Request):
-    context = {
-        "request": request,
-        "app_name": settings.app_name,
-        "version": settings.app_version,
-    }
+async def home(request: Request):
 
     return templates.TemplateResponse(
         request=request,
-        name="base.html",
-        context=context,
+        name="home.html",
+        context={
+            "request": request,
+            "cleanflow_file_price": cleanflow_file_price,
+            "currency_symbol": currency_symbol,
+        },
     )
 
 
 @app.get("/health")
-def health():
+async def health():
+
     return {
         "status": "ok",
-        "application": settings.app_name,
-        "version": settings.app_version,
+        "service": "FlowSuite",
+        "version": "1.0.0",
     }
 
 
-@app.get("/pricing/cleanflow")
-def cleanflow_pricing(
-    quantity: int = 1,
-    currency: str = "NGN",
-):
-    total = cleanflow_file_price(
-        quantity,
-        currency,
-    )
+app.include_router(
+    clientflow_router
+)
 
-    return {
-        "service": "CleanFlow",
-        "unit": "file",
-        "quantity": quantity,
-        "currency": currency.upper(),
-        "symbol": currency_symbol(currency),
-        "total": str(total),
-    }
+app.include_router(
+    payflow_router
+)
+
+app.include_router(
+    cleanflow_router
+)
+
+app.include_router(
+    automation_router
+)

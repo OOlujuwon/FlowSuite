@@ -1,0 +1,189 @@
+:root {
+    --flow-dark: #17202a;
+    --flow-muted: #68727d;
+    --flow-border: #e5e7eb;
+    --flow-soft: #f7f8fa;
+}
+
+
+body {
+    color: var(--flow-dark);
+    background: #ffffff;
+    min-height: 100vh;
+}
+
+
+.navbar-brand {
+    letter-spacing: -0.03em;
+}
+
+
+.hero-section {
+    padding: 7rem 1.5rem 6rem;
+    background: var(--flow-soft);
+}
+
+
+.hero-copy {
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+
+.eyebrow {
+    display: inline-block;
+    margin-bottom: 1rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--flow-muted);
+}
+
+
+.hero-copy h1 {
+    font-size: clamp(3rem, 7vw, 6rem);
+    line-height: 0.95;
+    letter-spacing: -0.055em;
+    font-weight: 700;
+}
+
+
+.hero-text {
+    max-width: 650px;
+    margin: 2rem auto;
+    font-size: 1.15rem;
+    color: var(--flow-muted);
+}
+
+
+.hero-actions {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+
+.flow-section,
+.automation-section,
+.portfolio-section {
+    max-width: 1150px;
+    margin: 0 auto;
+    padding: 6rem 1.5rem;
+}
+
+
+.section-heading {
+    max-width: 700px;
+    margin-bottom: 3rem;
+}
+
+
+.section-heading h2,
+.automation-section h2 {
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    letter-spacing: -0.04em;
+}
+
+
+.section-heading p,
+.automation-section p {
+    color: var(--flow-muted);
+    font-size: 1.05rem;
+}
+
+
+.flow-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+    gap: 1.25rem;
+}
+
+
+.flow-card {
+    padding: 2rem;
+    border: 1px solid var(--flow-border);
+    border-radius: 1rem;
+    background: white;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.flow-card:hover {
+    transform: translateY(-3px);
+    box-shadow:
+        0 12px 35px rgba(0, 0, 0, 0.06);
+}
+
+
+.flow-number {
+    margin-bottom: 2rem;
+    color: var(--flow-muted);
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+
+.flow-card h3 {
+    font-size: 1.6rem;
+}
+
+
+.flow-card p {
+    min-height: 80px;
+    color: var(--flow-muted);
+}
+
+
+.flow-card a {
+    text-decoration: none;
+    font-weight: 600;
+}
+
+
+.automation-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    border-top: 1px solid var(--flow-border);
+    border-bottom: 1px solid var(--flow-border);
+}
+
+
+.automation-section > div {
+    max-width: 700px;
+}
+
+
+footer {
+    color: var(--flow-muted);
+}
+
+
+@media (max-width: 768px) {
+
+    .hero-section {
+        padding: 5rem 1rem;
+    }
+
+    .flow-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .flow-section,
+    .automation-section,
+    .portfolio-section {
+        padding: 4rem 1rem;
+    }
+
+    .automation-section {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+}

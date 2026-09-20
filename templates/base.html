@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
@@ -7,12 +8,12 @@
 
     <meta
         name="viewport"
-        content="width=device-width, initial-scale=1.0"
+        content="width=device-width, initial-scale=1"
     >
 
     <title>
         {% block title %}
-            {{ app_name }}
+        FlowSuite
         {% endblock %}
     </title>
 
@@ -23,7 +24,7 @@
 
     <link
         rel="stylesheet"
-        href="{{ url_for('static', path='css/style.css') }}"
+        href="{{ url_for('static', path='css/styles.css') }}"
     >
 
 </head>
@@ -31,16 +32,88 @@
 
 <body>
 
-<nav class="navbar navbar-expand-lg bg-dark navbar-dark">
+<nav class="navbar navbar-expand-lg bg-white border-bottom">
 
     <div class="container">
 
         <a
-            class="navbar-brand"
+            class="navbar-brand fw-bold"
             href="/"
         >
             FlowSuite
         </a>
+
+
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#mainNavigation"
+            aria-controls="mainNavigation"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+
+        <div
+            class="collapse navbar-collapse"
+            id="mainNavigation"
+        >
+
+            <ul class="navbar-nav ms-auto">
+
+                <li class="nav-item">
+
+                    <a
+                        class="nav-link"
+                        href="/clientflow/"
+                    >
+                        ClientFlow
+                    </a>
+
+                </li>
+
+
+                <li class="nav-item">
+
+                    <a
+                        class="nav-link"
+                        href="/payflow/"
+                    >
+                        PayFlow
+                    </a>
+
+                </li>
+
+
+                <li class="nav-item">
+
+                    <a
+                        class="nav-link"
+                        href="/cleanflow/"
+                    >
+                        CleanFlow
+                    </a>
+
+                </li>
+
+
+                <li class="nav-item">
+
+                    <a
+                        class="nav-link"
+                        href="/automation/"
+                    >
+                        Automation
+                    </a>
+
+                </li>
+
+            </ul>
+
+        </div>
 
     </div>
 
@@ -51,123 +124,35 @@
 
     {% block content %}
 
-    <div class="container py-5">
-
-        <div class="row justify-content-center">
-
-            <div class="col-lg-9">
-
-                <div class="text-center mb-5">
-
-                    <p class="text-uppercase text-muted small mb-2">
-                        Business Operations Tools
-                    </p>
-
-                    <h1 class="display-5 fw-bold">
-                        FlowSuite
-                    </h1>
-
-                    <p class="lead text-muted">
-                        Simple tools for customer management,
-                        payments and data operations.
-                    </p>
-
-                </div>
-
-
-                <div class="row g-4">
-
-                    <div class="col-md-4">
-
-                        <a
-                            href="/clientflow"
-                            class="text-decoration-none text-dark"
-                        >
-
-                            <div class="card h-100 shadow-sm">
-
-                                <div class="card-body">
-
-                                    <h2 class="h4">
-                                        ClientFlow
-                                    </h2>
-
-                                    <p class="text-muted">
-                                        Customers, CRM and follow-ups.
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-                        </a>
-
-                    </div>
-
-
-                    <div class="col-md-4">
-
-                        <div class="card h-100 shadow-sm">
-
-                            <div class="card-body">
-
-                                <h2 class="h4">
-                                    PayFlow
-                                </h2>
-
-                                <p class="text-muted">
-                                    Invoices, payments and balances.
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="col-md-4">
-
-                        <div class="card h-100 shadow-sm">
-
-                            <div class="card-body">
-
-                                <h2 class="h4">
-                                    CleanFlow
-                                </h2>
-
-                                <p class="text-muted">
-                                    Clean and transform messy data.
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
     {% endblock %}
 
 </main>
 
 
-<footer class="border-top py-4 mt-5">
+<footer class="border-top mt-5">
 
-    <div class="container text-center text-muted small">
+    <div class="container py-4">
 
-        FlowSuite v{{ version }}
+        <div class="d-flex justify-content-between flex-wrap gap-3">
+
+            <span>
+                © FlowSuite
+            </span>
+
+            <span class="text-muted">
+                Simple tools for better operations.
+            </span>
+
+        </div>
 
     </div>
 
 </footer>
+
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+></script>
 
 </body>
 
