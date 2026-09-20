@@ -7,6 +7,7 @@ from fastapi.staticfiles import StaticFiles
 
 from app.clientflow import router as clientflow_router
 from app.payflow import router as payflow_router
+from app.cleanflow import router as cleanflow_router
 from app.config.settings import settings
 from app.database.database import create_db_and_tables
 from app.services.pricing import (
@@ -63,6 +64,9 @@ app.include_router(
     payflow_router,
 )
 
+app.include_router(
+    cleanflow_router,
+)
 
 @app.get(
     "/",

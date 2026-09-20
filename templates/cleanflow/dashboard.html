@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <div class="card shadow-sm">
+                <div class="card-body p-5">
+
+                    <div class="mb-4">
+                        <span class="badge bg-dark">
+                            CleanFlow
+                        </span>
+
+                        <h1 class="display-6 mt-3">
+                            Clean messy data.
+                        </h1>
+
+                        <p class="text-muted">
+                            Upload a CSV or XLSX file and CleanFlow
+                            will identify common data problems,
+                            clean them, and return a ready-to-use file.
+                        </p>
+                    </div>
+
+                    <form
+                        action="/cleanflow/clean"
+                        method="post"
+                        enctype="multipart/form-data"
+                    >
+
+                        <div class="mb-4">
+                            <label
+                                for="file"
+                                class="form-label fw-semibold"
+                            >
+                                Choose a file
+                            </label>
+
+                            <input
+                                class="form-control"
+                                type="file"
+                                id="file"
+                                name="file"
+                                accept=".csv,.xlsx"
+                                required
+                            >
+
+                            <div class="form-text">
+                                Supported formats:
+                                {{ supported_extensions | join(", ") }}.
+                                Maximum size: 25 MB.
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+
+                            <div class="col-md-6">
+                                <div class="border rounded p-3 h-100">
+                                    <strong>
+                                        What gets cleaned?
+                                    </strong>
+
+                                    <ul class="small text-muted mt-2 mb-0">
+                                        <li>Column names</li>
+                                        <li>Extra whitespace</li>
+                                        <li>Blank values</li>
+                                        <li>Empty rows</li>
+                                        <li>Duplicate rows</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="border rounded p-3 h-100">
+                                    <strong>
+                                        What comes back?
+                                    </strong>
+
+                                    <ul class="small text-muted mt-2 mb-0">
+                                        <li>Cleaning summary</li>
+                                        <li>Data preview</li>
+                                        <li>Clean CSV</li>
+                                        <li>Clean XLSX</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="btn btn-dark btn-lg"
+                        >
+                            Clean my file
+                        </button>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
