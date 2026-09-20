@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-7">
+
+            <div class="card shadow-sm">
+
+                <div class="card-body p-5">
+
+                    <span class="badge bg-dark">
+                        Automation
+                    </span>
+
+                    <h1 class="h2 mt-3">
+                        Create an automation
+                    </h1>
+
+                    <p class="text-muted">
+                        Define what should trigger the rule
+                        and what FlowSuite should do.
+                    </p>
+
+
+                    <form
+                        action="/automation/new"
+                        method="post"
+                    >
+
+                        <div class="mb-3">
+
+                            <label
+                                for="name"
+                                class="form-label"
+                            >
+                                Automation name
+                            </label>
+
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="name"
+                                name="name"
+                                placeholder="Clean uploaded data"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="mb-3">
+
+                            <label
+                                for="description"
+                                class="form-label"
+                            >
+                                Description
+                            </label>
+
+                            <textarea
+                                class="form-control"
+                                id="description"
+                                name="description"
+                                rows="3"
+                                placeholder="Describe what this automation does."
+                            ></textarea>
+
+                        </div>
+
+
+                        <div class="mb-3">
+
+                            <label
+                                for="trigger_type"
+                                class="form-label"
+                            >
+                                Trigger
+                            </label>
+
+                            <select
+                                class="form-select"
+                                id="trigger_type"
+                                name="trigger_type"
+                            >
+
+                                <option value="manual">
+                                    Manual
+                                </option>
+
+                                <option value="interval">
+                                    On a schedule
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="mb-3">
+
+                            <label
+                                for="interval_minutes"
+                                class="form-label"
+                            >
+                                Interval in minutes
+                            </label>
+
+                            <input
+                                type="number"
+                                class="form-control"
+                                id="interval_minutes"
+                                name="interval_minutes"
+                                min="1"
+                                placeholder="60"
+                            >
+
+                            <div class="form-text">
+                                Required when using a scheduled trigger.
+                            </div>
+
+                        </div>
+
+
+                        <div class="mb-4">
+
+                            <label
+                                for="action_type"
+                                class="form-label"
+                            >
+                                Action
+                            </label>
+
+                            <select
+                                class="form-select"
+                                id="action_type"
+                                name="action_type"
+                            >
+
+                                <option value="clean_latest">
+                                    Clean latest CleanFlow file
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="d-flex gap-2">
+
+                            <button
+                                type="submit"
+                                class="btn btn-dark"
+                            >
+                                Create automation
+                            </button>
+
+                            <a
+                                href="/automation/"
+                                class="btn btn-outline-secondary"
+                            >
+                                Cancel
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

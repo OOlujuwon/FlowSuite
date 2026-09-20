@@ -1,3 +1,5 @@
+import asyncio
+
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
@@ -10,6 +12,12 @@ from app.payflow import router as payflow_router
 from app.cleanflow import router as cleanflow_router
 from app.config.settings import settings
 from app.database.database import create_db_and_tables
+
+from sqlmodel import Session
+
+from app.automation import router as automation_router
+from app.database.database import engine
+from app.services.automation import run_due_automations
 from app.services.pricing import (
     cleanflow_file_price,
     currency_symbol,
@@ -24,12 +32,41 @@ templates = Jinja2Templates(
     directory="templates"
 )
 
+async def automation_loop():
+    """Run scheduled automation rules periodically."""
+
+    while True:
+        try:
+            with Session(engine) as session:
+                run_due_automations(session)
+
+        except Exception:
+            # A failed scheduled run must not kill
+            # the entire application.
+            pass
+
+        await asyncio.sleep(30)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application startup and shutdown lifecycle."""
+
     create_db_and_tables()
-    yield
+
+    scheduler_task = asyncio.create_task(
+        automation_loop()
+    )
+
+    try:
+        yield
+
+    finally:
+        scheduler_task.cancel()
+
+        try:
+            await scheduler_task
+        except asyncio.CancelledError:
+            pass
 
 
 app = FastAPI(
@@ -66,6 +103,10 @@ app.include_router(
 
 app.include_router(
     cleanflow_router,
+)
+
+app.include_router(
+    automation_router,
 )
 
 @app.get(

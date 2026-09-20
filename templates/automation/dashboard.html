@@ -1,0 +1,258 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <span class="badge bg-dark">
+                Automation
+            </span>
+
+            <h1 class="display-6 mt-3">
+                Let FlowSuite do the repeat work.
+            </h1>
+
+            <p class="text-muted mb-0">
+                Create simple rules that run actions automatically.
+            </p>
+        </div>
+
+        <a
+            href="/automation/new"
+            class="btn btn-dark"
+        >
+            New automation
+        </a>
+
+    </div>
+
+
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-body">
+
+            <h2 class="h5 mb-3">
+                Automation rules
+            </h2>
+
+            {% if rules %}
+
+            <div class="table-responsive">
+
+                <table class="table align-middle">
+
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Trigger</th>
+                            <th>Action</th>
+                            <th>Status</th>
+                            <th>Next run</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for rule in rules %}
+
+                        <tr>
+
+                            <td>
+                                <strong>
+                                    {{ rule.name }}
+                                </strong>
+
+                                {% if rule.description %}
+                                <div class="small text-muted">
+                                    {{ rule.description }}
+                                </div>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {{ rule.trigger_type }}
+
+                                {% if rule.interval_minutes %}
+                                <div class="small text-muted">
+                                    Every {{ rule.interval_minutes }} min
+                                </div>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {{ rule.action_type }}
+                            </td>
+
+                            <td>
+                                {% if rule.active %}
+                                <span class="badge bg-success">
+                                    Active
+                                </span>
+                                {% else %}
+                                <span class="badge bg-secondary">
+                                    Paused
+                                </span>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {% if rule.next_run %}
+                                    {{ rule.next_run }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+
+                            <td>
+
+                                <div class="d-flex gap-2">
+
+                                    <form
+                                        action="/automation/{{ rule.id }}/run"
+                                        method="post"
+                                    >
+                                        <button
+                                            class="btn btn-sm btn-dark"
+                                            type="submit"
+                                        >
+                                            Run
+                                        </button>
+                                    </form>
+
+                                    <form
+                                        action="/automation/{{ rule.id }}/toggle"
+                                        method="post"
+                                    >
+                                        <button
+                                            class="btn btn-sm btn-outline-secondary"
+                                            type="submit"
+                                        >
+                                            {% if rule.active %}
+                                                Pause
+                                            {% else %}
+                                                Activate
+                                            {% endif %}
+                                        </button>
+                                    </form>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {% else %}
+
+            <p class="text-muted mb-0">
+                No automation rules yet.
+            </p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    <div class="card shadow-sm">
+
+        <div class="card-body">
+
+            <h2 class="h5 mb-3">
+                Run history
+            </h2>
+
+            {% if history %}
+
+            <div class="table-responsive">
+
+                <table class="table table-sm align-middle">
+
+                    <thead>
+                        <tr>
+                            <th>Rule</th>
+                            <th>Status</th>
+                            <th>Message</th>
+                            <th>Started</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for run in history %}
+
+                        <tr>
+
+                            <td>
+                                #{{ run.rule_id }}
+                            </td>
+
+                            <td>
+
+                                {% if run.status == "success" %}
+
+                                <span class="badge bg-success">
+                                    Success
+                                </span>
+
+                                {% elif run.status == "failed" %}
+
+                                <span class="badge bg-danger">
+                                    Failed
+                                </span>
+
+                                {% else %}
+
+                                <span class="badge bg-secondary">
+                                    {{ run.status }}
+                                </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+                                {{ run.message }}
+                            </td>
+
+                            <td>
+                                {{ run.started_at }}
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {% else %}
+
+            <p class="text-muted mb-0">
+                No automation runs yet.
+            </p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

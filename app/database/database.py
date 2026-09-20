@@ -5,6 +5,10 @@ from app.config.settings import settings
 from app.models.shared import Customer, Activity, Currency, PricingRule
 from app.models.clientflow import FollowUp
 from app.models.payflow import Invoice, InvoiceItem, Payment, PaymentReminder
+from app.models.automation import (
+    AutomationRule,
+    AutomationRun,
+)
 
 
 engine = create_engine(
